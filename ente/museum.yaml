@@ -1,0 +1,56 @@
+db:
+      host: postgres
+      port: 5432
+      name: ente_db
+
+s3:
+      # These defaults apply to all buckets and can be overridden per bucket.
+      # Set this to false for external buckets or buckets using SSL.
+      are_local_buckets: true
+      # Set this to false for subdomain-style URLs. Keep it true for MinIO with SSL.
+      use_path_style_urls: true
+      b2-eu-cen:
+         # Uncomment to override the defaults for this bucket.
+         # are_local_buckets: true
+         # use_path_style_urls: true
+         key: ${MINIO_ROOT_USER}
+         secret: ${MINIO_ROOT_PASSWORD}
+         endpoint: localhost:3200
+         region: eu-central-2
+         bucket: b2-eu-cen
+      wasabi-eu-central-2-v3:
+         # are_local_buckets: true
+         # use_path_style_urls: true
+         key: ${MINIO_ROOT_USER}
+         secret: ${MINIO_ROOT_PASSWORD}
+         endpoint: localhost:3200
+         region: eu-central-2
+         bucket: wasabi-eu-central-2-v3
+         compliance: false
+      scw-eu-fr-v3:
+         # are_local_buckets: true
+         # use_path_style_urls: true
+         key: ${MINIO_ROOT_USER}
+         secret: ${MINIO_ROOT_PASSWORD}
+         endpoint: localhost:3200
+         region: eu-central-2
+         bucket: scw-eu-fr-v3
+
+# Specify the base endpoints for various web apps you're running.
+apps:
+    public-albums: http://localhost:3002
+    public-auth: http://localhost:3003
+    embed-albums: http://localhost:3006
+    public-locker: http://localhost:3005
+    public-paste: http://localhost:3008
+    cast: http://localhost:3004
+    accounts: http://localhost:3001
+    public-memories: http://localhost:3010
+
+key:
+      encryption: ${ENTE_KEY_ENCRYPTION}
+      hash: ${ENTE_KEY_HASH}
+jwt:
+      secret: ${ENTE_JWT_SECRET}
+internal:
+  admin: 1580559962386438

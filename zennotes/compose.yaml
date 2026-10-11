@@ -1,0 +1,45 @@
+services:
+  ts-zennotes:
+    container_name: ts-zennotes
+    image: tailscale/tailscale:latest
+    hostname: notes
+    environment:
+      - TS_AUTH_ONCE=1
+      - TS_CLIENT_ID=${TS_CLIENT_ID}
+      - TS_CLIENT_SECRET=${TS_CLIENT_SECRET}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:containers
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/serve-zennotes.json
+    volumes:
+      - ts-zennotes:/var/lib/tailscale
+      - /dev/net/tun:/dev/net/tun
+      - ./ts-config:/config
+    cap_add:
+      - net_admin
+      - net_raw
+    restart: unless-stopped
+
+  zennotes:
+    image: adibhanna/zennotes:latest
+    container_name: zennotes
+    network_mode: service:ts-zennotes
+    environment:
+      ZENNOTES_AUTH_TOKEN: ${ZENNOTES_AUTH_TOKEN}
+    volumes:
+      - ~/containers_storage/zennotes/vault:/workspace   # your notes (plain Markdown)
+      - ~/containers_storage/zennotes/data:/data         # server config
+    read_only: true
+    user: "1000:1000"
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      ts-zennotes:
+        condition: service_started
+    restart: unless-stopped
+volumes:
+  ts-zennotes:
+    driver: local
